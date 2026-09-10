@@ -58,32 +58,39 @@ else:
 
     st.divider()
 
-    fig_suhu = go.Figure()
-    fig_suhu.add_trace(go.Scatter(y=df['suhu'], mode='lines+markers', name='Suhu'))
-    fig_suhu.add_hline(y=BATAS_SUHU, line_dash="dash", line_color="red",
-                        annotation_text="Batas Aman")
-    fig_suhu.update_layout(title="Tren Suhu Mesin (°C)", height=350)
-    st.plotly_chart(fig_suhu, use_container_width=True)
+    tab_suhu, tab_arus, tab_vibrasi, tab_data = st.tabs(
+        ["🌡️ Suhu", "⚡ Arus", "📳 Vibrasi", "📋 Data Mentah"]
+    )
 
-    fig_arus = go.Figure()
-    fig_arus.add_trace(go.Scatter(y=df['arus'], mode='lines+markers',
-                                    name='Arus', line=dict(color='orange')))
-    fig_arus.add_hline(y=BATAS_ARUS, line_dash="dash", line_color="red",
-                        annotation_text="Batas Aman")
-    fig_arus.update_layout(title="Tren Arus Listrik (A)", height=350)
-    st.plotly_chart(fig_arus, use_container_width=True)
+    with tab_suhu:
+        fig_suhu = go.Figure()
+        fig_suhu.add_trace(go.Scatter(y=df['suhu'], mode='lines+markers', name='Suhu'))
+        fig_suhu.add_hline(y=BATAS_SUHU, line_dash="dash", line_color="red",
+                            annotation_text="Batas Aman")
+        fig_suhu.update_layout(title="Tren Suhu Mesin (°C)", height=450)
+        st.plotly_chart(fig_suhu, use_container_width=True)
 
-    fig_vibrasi = go.Figure()
-    fig_vibrasi.add_trace(go.Scatter(y=df['vibrasi'], mode='lines+markers',
-                                       name='Vibrasi', line=dict(color='purple')))
-    fig_vibrasi.add_hline(y=BATAS_VIBRASI, line_dash="dash", line_color="red",
-                           annotation_text="Batas Aman")
-    fig_vibrasi.update_layout(title="Tren Vibrasi (mm/s)", height=350)
-    st.plotly_chart(fig_vibrasi, use_container_width=True)
+    with tab_arus:
+        fig_arus = go.Figure()
+        fig_arus.add_trace(go.Scatter(y=df['arus'], mode='lines+markers',
+                                        name='Arus', line=dict(color='orange')))
+        fig_arus.add_hline(y=BATAS_ARUS, line_dash="dash", line_color="red",
+                            annotation_text="Batas Aman")
+        fig_arus.update_layout(title="Tren Arus Listrik (A)", height=450)
+        st.plotly_chart(fig_arus, use_container_width=True)
 
-    st.divider()
-    st.subheader("Data Mentah (100 terakhir)")
-    st.dataframe(df, use_container_width=True)
+    with tab_vibrasi:
+        fig_vibrasi = go.Figure()
+        fig_vibrasi.add_trace(go.Scatter(y=df['vibrasi'], mode='lines+markers',
+                                           name='Vibrasi', line=dict(color='purple')))
+        fig_vibrasi.add_hline(y=BATAS_VIBRASI, line_dash="dash", line_color="red",
+                               annotation_text="Batas Aman")
+        fig_vibrasi.update_layout(title="Tren Vibrasi (mm/s)", height=450)
+        st.plotly_chart(fig_vibrasi, use_container_width=True)
+
+    with tab_data:
+        st.subheader("Data Mentah (100 terakhir)")
+        st.dataframe(df, use_container_width=True, height=450)
 
 time.sleep(3)
 st.rerun()
