@@ -49,10 +49,6 @@ st.markdown("""
         padding: 20px 22px;
         box-shadow: 0 4px 14px rgba(0,0,0,0.25);
     }
-    .card-title {
-        color: #9AA3B2; font-size: 13px; font-weight: 600;
-        text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 2px;
-    }
 
     .alarm-strip {
         border-radius: 14px; padding: 16px 22px; margin-bottom: 22px;
@@ -132,11 +128,11 @@ def buat_gauge(nilai, batas, judul, satuan, warna):
     return fig
 
 def buat_line_chart(df, kolom, batas, warna, judul, satuan):
+    """Grafik garis sederhana (bukan area solid) dengan titik-titik data."""
     fig = go.Figure()
     fig.add_trace(go.Scatter(
-        y=df[kolom], mode='lines', name=judul,
-        line=dict(color=warna, width=2.5), fill='tozeroy',
-        fillcolor=warna.replace('rgb', 'rgba').replace(')', ',0.08)') if 'rgb' in warna else warna
+        y=df[kolom], mode='lines+markers', name=judul,
+        line=dict(color=warna, width=2), marker=dict(size=5, color=warna)
     ))
     fig.add_hline(y=batas, line_dash="dash", line_color="#FF5C7A",
                   annotation_text="BATAS AMAN", annotation_font_color="#FF5C7A")
@@ -144,7 +140,7 @@ def buat_line_chart(df, kolom, batas, warna, judul, satuan):
         title=f"{judul} ({satuan}) — 100 Data Terakhir",
         height=380, plot_bgcolor="#161B24", paper_bgcolor="#161B24",
         font=dict(family="Segoe UI, sans-serif", color="#D3D7DE"),
-        xaxis=dict(gridcolor="#232838, "),
+        xaxis=dict(gridcolor="#232838"),
         yaxis=dict(gridcolor="#232838"),
         margin=dict(l=10, r=10, t=50, b=10),
     )
