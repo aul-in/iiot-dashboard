@@ -57,6 +57,7 @@ st.markdown("""
     }
     .alarm-ok { background: rgba(0,230,118,0.10); border: 1px solid rgba(0,230,118,0.3); color: #00E676; }
     .alarm-bad { background: rgba(255,23,68,0.12); border: 1px solid rgba(255,23,68,0.35); color: #FF5C7A; }
+    .alarm-ml { background: rgba(124,77,255,0.12); border: 1px solid rgba(124,77,255,0.4); color: #B39DFF; }
 
     .side-title { color: #F2F3F5; font-size: 18px; font-weight: 700; margin-bottom: 0px;}
     .side-sub { color: #6B7280; font-size: 12px; margin-bottom: 20px; }
@@ -85,6 +86,7 @@ st.markdown("""
     .badge { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
     .badge-normal { background: rgba(0,230,118,0.12); color: #00E676; }
     .badge-kritis { background: rgba(255,23,68,0.15); color: #FF5C7A; }
+    .badge-anomali { background: rgba(124,77,255,0.18); color: #B39DFF; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -190,6 +192,9 @@ else:
     else:
         st.markdown('<div class="alarm-strip alarm-ok">✅ &nbsp; Seluruh parameter mesin dalam kondisi normal.</div>', unsafe_allow_html=True)
 
+    if data_terbaru.get('anomali') == "ANOMALI":
+        st.markdown('<div class="alarm-strip alarm-ml">🤖 &nbsp; ML ALERT — Pola data ini terdeteksi tidak biasa dibanding kebiasaan historis mesin.</div>', unsafe_allow_html=True)
+
     # --- Gauge cards ---
     g1, g2, g3 = st.columns(3)
     with g1:
@@ -227,6 +232,8 @@ else:
         rows_html = ""
         for _, row in df.iloc[::-1].head(25).iterrows():
             badge_class = "badge-kritis" if row['status'] == "KRITIS" else "badge-normal"
+            anomali_val = row.get('anomali', 'NORMAL')
+            badge_ml_class = "badge-anomali" if anomali_val == "ANOMALI" else "badge-normal"
             waktu = datetime.fromtimestamp(row['timestamp']).strftime('%H:%M:%S')
             rows_html += f"""
             <tr>
@@ -235,11 +242,12 @@ else:
                 <td>{row['arus']} A</td>
                 <td>{row['vibrasi']} mm/s</td>
                 <td><span class="badge {badge_class}">{row['status']}</span></td>
+                <td><span class="badge {badge_ml_class}">{anomali_val}</span></td>
             </tr>
             """
         st.markdown(f"""
         <table class="logtable">
-            <tr><th>Waktu</th><th>Suhu</th><th>Arus</th><th>Vibrasi</th><th>Status</th></tr>
+            <tr><th>Waktu</th><th>Suhu</th><th>Arus</th><th>Vibrasi</th><th>Status</th><th>🤖 ML</th></tr>
             {rows_html}
         </table>
         """, unsafe_allow_html=True)
