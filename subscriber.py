@@ -1,9 +1,13 @@
 import json
 import sqlite3
 import time
+import os
 import requests
 import paho.mqtt.client as mqtt
 from supabase import create_client
+from dotenv import load_dotenv
+
+load_dotenv()  # baca isi file .env
 
 BROKER_ALAMAT = "localhost"
 BROKER_PORT = 1883
@@ -15,9 +19,9 @@ SUPABASE_URL = "https://arkkaenfzsgkfzwmoqpl.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFya2thZW5menNna2Z6d21vcXBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkwMjM5NzUsImV4cCI6MjEwNDU5OTk3NX0.erRS8-0VrgcC7BdUWruutssRmk3e_Z3CMX_LbODLqqk"
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# --- Telegram Bot ---
-TELEGRAM_TOKEN = "7709393541:AAE0xvGz4bQj655L13ZO5ywOZSYiHiuDw6k"
-TELEGRAM_CHAT_ID = "8795412428"
+# --- Telegram Bot (token dibaca dari file .env, TIDAK ditulis langsung di sini) ---
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 # Supaya tidak spam notifikasi tiap 2 detik, kasih jeda minimal antar notifikasi
 JEDA_MINIMAL_NOTIFIKASI = 60  # detik
