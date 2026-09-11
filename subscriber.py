@@ -93,9 +93,17 @@ def siapkan_database_lokal():
         CREATE TABLE IF NOT EXISTS riwayat_sensor (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             suhu REAL, arus REAL, vibrasi REAL,
-            status TEXT, timestamp REAL, anomali TEXT
+            status TEXT, timestamp REAL
         )
     """)
+    # Kalau tabel sudah ada dari sebelumnya (tanpa kolom anomali), tambahkan kolomnya di sini.
+    # Dibungkus try/except karena akan error kalau kolomnya sudah pernah ditambahkan.
+    try:
+        cursor.execute("ALTER TABLE riwayat_sensor ADD COLUMN anomali TEXT DEFAULT 'NORMAL'")
+        print("Kolom 'anomali' berhasil ditambahkan ke tabel lokal.")
+    except sqlite3.OperationalError:
+        pass  # kolom sudah ada, tidak masalah
+
     conn.commit()
     conn.close()
     print(f"Database lokal '{NAMA_DATABASE}' siap dipakai.")
